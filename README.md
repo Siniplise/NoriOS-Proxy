@@ -1,4 +1,4 @@
-# NoriWeb Origin
+# 基于MF-Dust/Nori.Web兼容后端实现剧情+记忆+TTS的反向代理
 
 > **「我要给她完整的一生」** — 我让 Nori 真的记住了我
 >
@@ -303,7 +303,7 @@ powershell -ExecutionPolicy Bypass -File scripts\reset-memory.ps1 -KeepStory # �
   （`PERSONA_PATHS` 中无 V4.4，且无 fallback），代码**不引用** `Nori System Prompt V4.4.md`。
   上面那份副本只喂给游戏原生 AI 面板的 `characterPrompt` 字段；LLM 指向本地人格时该字段不生效。
 - 仓库内无其它第三方提示词；人格拆分文件、标准记忆、游戏规则等均**不在本仓库**，需自备。
-- 本仓库代码许可待定（作者保留选择）。
+- 本仓库代码采用 **MIT**（见 [LICENSE](LICENSE)）。**例外**：`nori-prompt-inject.js` 中摘自 V4.4 的 8,977 字文本权利不在本项目，不在此许可范围内。
 - 使用风险自负；因使用本仓库导致的任何问题与原作者、上游项目无关。
 
 详见 [NOTICE.md](NOTICE.md)。

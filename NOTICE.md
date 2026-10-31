@@ -66,3 +66,11 @@ V4.4 正文由社区从公开视频与实机录屏转写整理，在 QQ 群、Gi
 - 任何真实 API Key
 
 若你分发基于本仓库的构建，请自行确保上述内容的使用符合其原始许可。
+
+---
+
+## 6. 本仓库许可
+
+- 代码采用 **MIT**，见 [LICENSE](LICENSE)，版权人 Siniplise（2026）。
+- **例外**：`frontend/shims/nori-prompt-inject.js` 中摘自《Nori System Prompt V4.4》的 8,977 字文本，
+  权利不在本项目，**不适用上述 MIT 许可**；如需使用请自行确认来源与授权。
