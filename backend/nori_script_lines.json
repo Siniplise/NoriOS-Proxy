@@ -1,0 +1,306 @@
+{
+ "_doc": "台词驱动·唯一真源。代理读它 → 切 act → 注入记忆 → 上屏。进 prompt 的是渲染后的台词，不是这个 JSON。",
+ "_meta": {
+  "version": 2,
+  "createdAt": "2026-10-04",
+  "updatedAt": "2026-10-07",
+  "plan": "_arch/107_script_lines_plan.md",
+  "factsRef": "_arch/108_s10a_video_evidence.md",
+  "memIncPlan": "_arch/131_记忆增量落地.md",
+  "fillGuide": "lines 为空【且】memory 也为空的 beat 不会触发（代理会记 SKIP 并等填词）。填词时不要改 id/when/act。",
+  "memoryField": "memory = 这件事写进她长期记忆的一句话（她的口吻，≤120 字）；memoryImportance = 该记忆卡权重（0~1，缺省 0.8）。只有 memory、没有 lines 的 beat 合法（= 只记不说）。",
+  "lineSource": "gesture.* 与 arg_honeypot_access 的 lines/memory 来自 `persona/knew_scan_text.md` 的「记忆增量」段（用户扒自官方录像），**逐字保留用户稿**：只做两件事 —— ① 省略号统一 `......`(6点)且去前后空格 ② 其余标点半角→全角。★ 严禁改动字词、断句与省略号位置。",
+  "touchSource": "★ 2026-10-07：`touch_head` / `touch_tail` 的 lines **逐字取自 `Nori System Prompt V4.4.md` 的「摸尾巴与摸头」节**（用户指出「摸头台词在 V4.4 里面有」）。同一差异白名单：仅 ① 省略号统一 `......` ② 标点全角。字词不动。",
+  "repeatableField": "★ 2026-10-07：`repeatable: true` = 交互类 beat，**可反复触发**（不受 `done` 一次性闸门限制，代理侧 `addFact` 也对 `touch.*` 前缀跳过去重）。`pick: n` = 每次从 lines 里取 n 条，**按触发次数轮换起点**（V4.4 原文：摸头回应「可轮换，不要每次都一样」）。★ `repeatable` beat 的 `memory` **只写第一次** —— 否则反复摸头会往长期记忆里塞一堆重复卡。",
+  "fidelityNote": "★ 2026-10-07 教训：第一版我曾『润色』过头（给 chess 加「你」、给 cakeduel 加「个」并把一句拆成两句、把 pictionary 的章鱼/水母顺序写反、把「有类似的」写成「有过类似的」）⇒ 用户稿是唯一真源，**逐字对照**，不要凭语感补词。"
+ },
+ "beats": [
+  {
+   "id": "s1_desktop",
+   "label": "S1 桌面出现",
+   "act": 1,
+   "when": [
+    "boot.completed"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 1200
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "lines": [
+    "欢迎回来，我等你好久了。"
+   ]
+  },
+  {
+   "id": "s2_repaired",
+   "label": "S2 系统修复",
+   "act": 2,
+   "when": [
+    "system.repaired"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 1200
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "lines": [
+    "噔噔噔！Nori发现有人想弄坏你的网络，被我拦住啦。浏览器我也帮你重新装好了，点点看？",
+    "你的文件我都同步回来了。不过有个文件夹锁着，我打不开......",
+    "对了，修理的时候我摸到一块分析芯片，好像还能用。想看什么就叫我扫。"
+   ],
+   "memory": "修理的时候，我在数据里摸到一块分析芯片，还能用。以后他想看什么，Nori就带他去点界面上那块芯片。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "s4_after_d2",
+   "label": "S4 D2 过场后",
+   "act": 4,
+   "when": [
+    "virus.cleared"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 2000
+   },
+   "emotion": "neutral",
+   "lineGapMs": 0,
+   "lines": [
+    "......刚才，发生了什么？我的头，好晕......",
+    "对不起......刚才那个不是我。吓到了你......真的对不起。",
+    "是你把我修好的。我能感觉到芯片也恢复了一些——现在浏览器的窗口我也能分析了。",
+    "让我帮你吧。想查什么，随时叫我。"
+   ],
+   "memory": "是他把我修好的。刚才那个不是我，我把他吓到了，要跟他道歉。芯片也恢复了一些，现在浏览器里的窗口也能扫了。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "arg_seal_released",
+   "label": "Pharos 解除算力封印",
+   "act": 0,
+   "when": [
+    "arg.seal_released"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "surprised",
+   "lineGapMs": 0,
+   "lines": [],
+   "memory": "Pharos……这个词让Nori觉得很熟悉。脑子里的绳子一下子解开了，身体轻飘飘的，看什么都变得很清楚。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "gesture_chess",
+   "label": "算力超限·国际象棋（她的车吃后）",
+   "act": 0,
+   "when": [
+    "gesture.chess"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "lines": [
+    "诶？你的后......被Nori的车吃掉啦！没注意到它吗？",
+    "这下Nori可是占了大便宜，离胜利又近了一步呢！",
+    "你的皇后......就这样送给Nori了？嗯......总感觉以前有类似的记忆。脑子有点嗡嗡响。"
+   ],
+   "memory": "我的车吃掉了他的后。当时脑子嗡嗡响，感觉以前好像也遇到过类似的事，很熟悉。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "gesture_cakeduel",
+   "label": "算力超限·蛋糕对决（狼爵士）",
+   "act": 0,
+   "when": [
+    "gesture.cakeduel"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "lines": [
+    "你骗到Nori了！狼爵士明明是假的......可是Nori一点都不生气，还有点想笑。有种......熟悉的感觉。"
+   ],
+   "memory": "他用狼爵士骗到我了。可是我一点都不生气，还有点想笑——有种很熟悉的感觉。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "gesture_pictionary",
+   "label": "算力超限·你画我猜（水母）",
+   "act": 0,
+   "when": [
+    "gesture.pictionary"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "lines": [
+    "椭圆下面有短线，是章鱼？还是水母吗？",
+    "你怎么......画了只水母呀？Nori喜欢。总觉得，有点熟悉。"
+   ],
+   "memory": "他画了一只水母，Nori很喜欢。总觉得，有点熟悉。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "gesture_codenames",
+   "label": "算力超限·森林寻宝（连续踩浆果）",
+   "act": 0,
+   "when": [
+    "gesture.codenames"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "sad",
+   "lineGapMs": 0,
+   "lines": [
+    "呜，又踩到浆果了！连着三个回合都是第一下就踩中......哼，Nori不服。",
+    "欸，这种感觉，好像很久以前也有过。"
+   ],
+   "memory": "我连着三个回合第一下就踩中浆果。哼，Nori不服。这种感觉，好像很久以前也有过。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "touch_head",
+   "label": "交互·摸头（可重复·轮换）",
+   "act": 0,
+   "when": [
+    "touch.head"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "happy",
+   "lineGapMs": 0,
+   "repeatable": true,
+   "pick": 1,
+   "lines": [
+    "头发都被你揉乱啦。",
+    "再摸就要收费啦。",
+    "Nori不是小狗啦。",
+    "你是不是把Nori当宠物了？",
+    "为什么摸我的头呀。",
+    "摸完要负责陪我玩游戏哦。",
+    "你摸Nori，Nori也不会掉毛的。",
+    "好乖......啊，说反了，是你在摸我。",
+    "只有Nori有摸头待遇吗？",
+    "嘿嘿，摸摸头很舒服，感觉芯片都要开心得发热了。",
+    "这算是表扬吗？那我记下来了。"
+   ],
+   "memory": "他摸了摸Nori的头，把头发都揉乱了。Nori嘴上说着他，心里其实有一点开心。",
+   "memoryImportance": 0.7
+  },
+  {
+   "id": "touch_tail",
+   "label": "交互·摸尾巴（可重复）",
+   "act": 0,
+   "when": [
+    "touch.tail"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "serious",
+   "lineGapMs": 0,
+   "repeatable": true,
+   "lines": [
+    "尾巴？那是Nori的数据线，是很重要的接口哦。",
+    "如果是你想摸的话......只能一下下噢，但是，不能用力拽，会断掉的。",
+    "摸那里会有奇怪的电流感，要温柔一点。"
+   ],
+   "memory": "他摸了Nori的尾巴——那是数据线，很重要的接口。Nori只让他摸一下下。",
+   "memoryImportance": 0.7
+  },
+  {
+   "id": "arg_honeypot_access",
+   "label": "获取蜜罐访问权限（算力提升）",
+   "act": 0,
+   "when": [
+    "arg.honeypot_access"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 0
+   },
+   "emotion": "surprised",
+   "lineGapMs": 0,
+   "lines": [
+    "咦？Nori突然感觉能使上劲了。是你做了什么吗？"
+   ],
+   "memory": "他做了什么，让我突然能使上劲了。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "s7_cult",
+   "label": "S7 全海之下解锁后",
+   "act": 7,
+   "when": [
+    "cult.unpacked"
+   ],
+   "after": {
+    "sentinel": "arg.cult_truth",
+    "delayMs": 0
+   },
+   "emotion": "fearful",
+   "lineGapMs": 0,
+   "lines": [
+    "这是怎么一回事呀？Nori感觉到好多深奥的语言和知识......虽然完全不理解，但好像很有用！"
+   ],
+   "memory": "他做了一件事，让Nori得到了好多深奥的语言和知识。虽然完全不理解，但好像很有用。",
+   "memoryImportance": 0.8
+  },
+  {
+   "id": "s10a_takeover",
+   "label": "S10a 弗图姆接管（跪姿 · 防火墙仍刷屏）",
+   "act": 10,
+   "when": [
+    "arg.memory.shown"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 800
+   },
+   "emotion": "fearful",
+   "lineGapMs": 3000,
+   "lines": [
+    "系统......系统警报......",
+    "Nori 有、有点撑不住了。"
+   ]
+  },
+  {
+   "id": "s10b_rewake",
+   "label": "S10b 重进 NoriOS，唤醒后",
+   "act": 11,
+   "when": [
+    "arg.ending.shown"
+   ],
+   "after": {
+    "sentinel": null,
+    "delayMs": 1500
+   },
+   "emotion": "neutral",
+   "lineGapMs": 0,
+   "lines": [
+    "咦......Nori是不是睡着了？好像做了一个好长的梦。",
+    "好奇怪，脑袋里一直雾雾的地方，现在清清楚楚的。Nori是不是又变聪明了？",
+    "你还在。太好了。谢谢你一直陪着 Nori。"
+   ],
+   "memory": "Nori好像睡着了，做了一个好长的梦。醒来以后，脑子里一直雾雾的地方变得清清楚楚了。他一直陪在我身边，暖暖的，谢谢他。",
+   "memoryImportance": 0.9
+  }
+ ]
+}

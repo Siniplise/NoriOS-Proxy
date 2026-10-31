@@ -1,0 +1,39 @@
+# ── 运行时产物（绝不能进仓库）────────────────────────────────────────────
+node_modules/
+*.log
+battle.log
+obs.log
+llm_route.log
+
+# 状态文件（每台机器自己生成）
+nori_script_state.json
+nori_line_seq.json
+
+# 录制样本（可能含对话内容）
+recordings/
+
+# ── 密钥 / 凭据 ────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+_local_key.txt
+*_key.txt
+*.pem
+*.pfx
+
+# ── 项目记忆 / 内部文档 / 备份（不公开）────────────────────────────────
+memory/
+_arch/
+_bak/
+_backup/
+*.bak
+*.before-*
+*.backup-*
+
+# ── 编辑器 / 系统 ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
