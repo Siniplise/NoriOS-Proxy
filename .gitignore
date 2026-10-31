@@ -9,6 +9,10 @@ llm_route.log
 nori_script_state.json
 nori_line_seq.json
 
+# 可选数据（游戏/人格侧数据，不随仓库分发；目录里只保留 README）
+backend/data/*
+!backend/data/README.md
+
 # 录制样本（可能含对话内容）
 recordings/
 

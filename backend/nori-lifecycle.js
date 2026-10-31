@@ -55,7 +55,7 @@ const TTL_MS = Number(process.env.NORI_LIFE_TTL || 10 * 60 * 1000);
  */
 const RULES_ON = !/^(off|0|no|false)$/i.test(String(process.env.NORI_GAMERULES || 'on'));
 const RULES_PATH = process.env.NORI_GAME_RULES_PATH
-  || '';
+  || (__dirname + '/data/game.md');
 const SECTION_FOR = { codenames: '森林寻宝', chess: '国际象棋', cakeduel: '蛋糕对决', pictionary: '你画我猜' };
 
 let RULES_ALL = '';     // 整份（切节失败时的退化）

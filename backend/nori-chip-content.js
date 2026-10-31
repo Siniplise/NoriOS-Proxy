@@ -24,9 +24,9 @@
 const fs = require('fs');
 
 const PACK_PATH = process.env.NORI_PACK_PATH
-  || '';
+  || (__dirname + '/data/live_world_pack.json');
 const CHIP_PATH = process.env.NORI_CHIP_PATH
-  || '';
+  || (__dirname + '/data/chip.json');
 const CAP = Math.max(200, Number(process.env.NORI_CHIP_CAP || 3000));
 
 /* ★★ 2026-10-07 实测修正（重要）：

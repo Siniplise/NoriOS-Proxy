@@ -1180,7 +1180,7 @@ const ART_REQ = new Map();   // requestId -> artifactType（客户端要工件�
 function normKey(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^0-9a-z\u4e00-\u9fff]/g, ''); }
 // ---- 附件/文件的真实大小校正：pack 里声明的 size_bytes 与磁盘上的 /webAssets 资源多处不一致
 //      （下载进度、PDF 查看器、下载完成判定都看这个数），以磁盘为准重写。
-const ASSET_ROOT = process.env.NORI_ASSET_ROOT || '';
+const ASSET_ROOT = process.env.NORI_ASSET_ROOT || (__dirname + '/data/public');
 const ASSET_FIX = new Map();   // artifactId -> 磁盘大小（-1 = 文件不在）
 function assetAbs(p) {
   const s = String(p || '');
@@ -1845,7 +1845,7 @@ setInterval(() => { try { runBeats(); } catch (e) {} try { runRecovery(); } catc
 // ---- 读信/下载补偿：本地后端的 mail.read / file.download 是空操作（实测 ok=true 但不改世界状态），
 //      官方服务器会在这些命令后发 read_fact / download_fact。这里照做，用官方 dev.jump 通道补发。
 const FSMOD = require('fs');
-const PACK_PATH = process.env.NORI_PACK_PATH || '';
+const PACK_PATH = process.env.NORI_PACK_PATH || (__dirname + '/data/live_world_pack.json');
 const ART_FACT = new Map();   // artifactId -> 读/下载时官方会发的事实
 const FILE_META = new Map();  // fileId -> {folder, name}
 const FILE_GATE = new Map();  // fileId -> {fact, th}  密封卷：recover_when 事实或算力到阈值才可见
