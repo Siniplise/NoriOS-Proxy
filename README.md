@@ -1,10 +1,10 @@
 # NoriWeb Origin
 
-Nori.Web 的**本地中间层代理**。夹在游戏前端与人格 / TTS 服务之间，
+Nori.Web 的**本地中间层代理**。夹在游戏前端与人格 / TTS 服务之间，  
 负责把"只会念固定台词的角色"接成有记忆、有语音、能接住剧情的版本。
 
-> 非官方、非商业。角色与素材版权归原作者。
-> 游戏前端来自第三方开源项目 [MF-Dust/Nori.Web](https://github.com/MF-Dust/Nori.Web)（MIT），
+> 非官方、非商业。角色与素材版权归原作者。  
+> 游戏前端来自第三方开源项目 [MF-Dust/Nori.Web](https://github.com/MF-Dust/Nori.Web)（MIT），  
 > **本仓库不包含也不分发它的代码与素材**，只包含我们自己的中间层与客户端注入脚本。
 
 ---
@@ -13,12 +13,24 @@ Nori.Web 的**本地中间层代理**。夹在游戏前端与人格 / TTS 服务
 
 本仓库的注入脚本与中间层是**针对某一个具体的 Nori.Web 构建**写的，不是通用适配层。
 
-| 项 | 我们适配的版本 |
-|---|---|
-| 发行包 | `Nori.Web-windows-x86_64`（Nuitka standalone，Python 3.13.15） |
-| exe 构建时间 | **2026-08-29**（`Nori.Web.exe`，约 71.3 MB） |
-| 主前端 bundle | **`NormalApp-Cn6agT0F.js`**（3,356,207 B，2026-09-27） |
-| 对应上游 | 约等于 [MF-Dust/Nori.Web](https://github.com/MF-Dust/Nori.Web) 在 **2026-09-27** 的 `cf77e75` |
+| 项          | 我们适配的版本                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| 发行包        | `Nori.Web-windows-x86_64`（Nuitka standalone，Python 3.13.15）                              |
+| exe 构建时间   | **2026-08-29**（`Nori.Web.exe`，约 71.3 MB）                                                 |
+| 主前端 bundle | **`NormalApp-Cn6agT0F.js`**（3,356,207 B，2026-09-27）                                      |
+| **对应上游 commit** | **`cf77e75`（2026-09-27）** |
+
+**这个 commit 是怎么定出来的**（不是猜的）：拿发行包里两个**未被我们改动**的文件算 git blob 哈希，与上游历史逐个比对：
+
+| 文件 | 本地 blob | 上游 `cf77e75` 的 blob | 结果 |
+|---|---|---|---|
+| `README.md` | `fe7537c78d5f7beb…` | `fe7537c78d5f7beb…` | 一致 |
+| `public/asset-manifest.json` | `43a220ae781d0e4f…` | `43a220ae781d0e4f…` | 一致 |
+
+`asset-manifest.json` 是**构建产物**（含 `"version":"e386223aa1a3d379"`），它能对上，说明静态资源就是那次构建出来的；master 上的同名文件已经变了（`75541ef5…`，45,083 B）。
+
+> 唯一对不上的是 `backend/data/live_world_pack.json`：本地 11,564,829 B，上游 11,687,582 B。
+> 那是**我们后来自己替换成"干净包 / 第一天包"**造成的，属预期差异，不作为版本依据。
 
 **上游已经往前走了，而且不兼容。** 2026-10 之后的主要变化：
 
@@ -27,13 +39,13 @@ Nori.Web 的**本地中间层代理**。夹在游戏前端与人格 / TTS 服务
 - `66f8777` / `94db866` 引入 **EdgeOne 静态资源托管**与相关环境变量
 - `5742aa47` 改了多人对局：对手昵称、回合计时、掉线宽限
 
-⇒ 这些改动会动到我们依赖的**页面结构、注入时机与部分协议字段**。
-**请勿直接把新版 `Nori.Web.exe` 换进来** —— 注入脚本会静默失效（表现为：没语音、摸不到头、台词不触发）。
+⇒ 这些改动会动到我们依赖的**页面结构、注入时机与部分协议字段**。  
+**请勿直接把新版 `Nori.Web.exe` 换进来** —— 注入脚本会静默失效（表现为：没语音、摸不到头、台词不触发）。  
 要升级，需要按新版重新核对 `frontend/shims/` 里的选择器与钩子，再改中间层。
 
 ### 我们用的不是原版 exe
 
-我们自己**打过补丁**，但**不能分发**修改后的 exe（那是别人的产物）。
+我们自己**打过补丁**，但**不能分发**修改后的 exe（那是别人的产物）。  
 所以仓库只提供补丁脚本，让你对**你自己的合法副本**做同样的操作 —— 见下一节。
 
 ---
@@ -52,13 +64,13 @@ node tools/patch-exe.js "D:\Nori.Web\Nori.Web.exe" "D:\Nori.Web\Nori.Web.patched
 NORI_KEEP_FACTS=session.ready,boot.completed node tools/patch-exe.js "..."
 ```
 
-**它做什么**：exe 里硬编码了 41 条剧情事实常量，启动即被判定为"已通关"，
-干净包/第一天包因此推不动。脚本把这 41 条**等长替换**成占位符（默认保留
+**它做什么**：exe 里硬编码了 41 条剧情事实常量，启动即被判定为"已通关"，  
+干净包/第一天包因此推不动。脚本把这 41 条**等长替换**成占位符（默认保留  
 `session.ready`，冷开场要用），不生成、不修改任何其它内容。
 
 **它怎么保证安全**：
 
-- 先按**内容**定位那 41 条常量的连续区段（间隔 1~8 字节），**必须恰好命中一次**；
+- 先按**内容**定位那 41 条常量的连续区段（间隔 1~8 字节），**必须恰好命中一次**；  
   版本不对 ⇒ 直接退出，不会写出半残文件。
 - 默认**不覆盖**源 exe，输出到新文件；已存在则拒绝（除非 `--force`）。
 - 写后回读校验：该替换的必须是占位符，该保留的必须原样。
@@ -79,26 +91,26 @@ dst  Nori.Web.clean.exe  71,296,512 B  sha256 85125c9d67e7a3e9…
 
 ## 它做了什么
 
-| 能力 | 说明 |
-|---|---|
-| 帧中转 | WS 双向透传；文本帧不重新序列化，二进制音频帧原样过 |
+| 能力   | 说明                                            |
+| ---- | --------------------------------------------- |
+| 帧中转  | WS 双向透传；文本帧不重新序列化，二进制音频帧原样过                   |
 | 聊天拦截 | `/v1/*` 出口可被局部接管（固定台词），游戏回合（`json_object`）永不拦 |
-| 剧情台词 | 14 条 beat，由游戏 fact 触发；一次性 / 可重复两套语义 |
-| 语音编排 | 串行队列 + 逐句回报 + 9s 兜底；支持整段 WAV 与分块 PCM 两条路 |
-| 摸头 | `/nori-touch` + 四类过场闸门（冷开场 / 黑化 / 回忆 / 倒下） |
-| 内容闸门 | 芯片、邮件、信号、工件等"何时可见"的规则 |
-| 主动触发 | 按游戏事件让她主动说一句（带节流与互斥） |
+| 剧情台词 | 14 条 beat，由游戏 fact 触发；一次性 / 可重复两套语义           |
+| 语音编排 | 串行队列 + 逐句回报 + 9s 兜底；支持整段 WAV 与分块 PCM 两条路      |
+| 摸头   | `/nori-touch` + 四类过场闸门（冷开场 / 黑化 / 回忆 / 倒下）    |
+| 内容闸门 | 芯片、邮件、信号、工件等"何时可见"的规则                         |
+| 主动触发 | 按游戏事件让她主动说一句（带节流与互斥）                          |
 
 ---
 
 ## 运行环境
 
-| 组件 | 版本 | 是否必需 | 说明 |
-|---|---|---|---|
-| **Node.js** | ≥ 20 | 必需 | 本代理（`backend/`）；人格服务同样跑在 Node |
-| **Python** | ≥ 3.10 | 仅语音时需要 | TTS 服务（`aiohttp` + Inworld SDK），也可换成任意兼容 `/tts` 的实现 |
-| 游戏本体 | — | 必需 | Nori.Web 发行包（`Nori.Web.exe`），**不在本仓库** |
-| 浏览器 | Chromium 内核 | 必需 | 需支持 `AudioWorklet`（Chrome / Edge 均可） |
+| 组件          | 版本          | 是否必需   | 说明                                                  |
+| ----------- | ----------- | ------ | --------------------------------------------------- |
+| **Node.js** | ≥ 20        | 必需     | 本代理（`backend/`）；人格服务同样跑在 Node                       |
+| **Python**  | ≥ 3.10      | 仅语音时需要 | TTS 服务（`aiohttp` + Inworld SDK），也可换成任意兼容 `/tts` 的实现 |
+| 游戏本体        | —           | 必需     | Nori.Web 发行包（`Nori.Web.exe`），**不在本仓库**              |
+| 浏览器         | Chromium 内核 | 必需     | 需支持 `AudioWorklet`（Chrome / Edge 均可）                |
 
 无 Rust 依赖。`npm install` 只装两个包：`ws`、`chess.js`。
 
@@ -106,10 +118,10 @@ dst  Nori.Web.clean.exe  71,296,512 B  sha256 85125c9d67e7a3e9…
 
 ## 模型与外部服务
 
-| 用途 | 供应商 | 说明 |
-|---|---|---|
-| 对话 / 记忆 | **DeepSeek** | OpenAI 兼容接口，作为后端 LLM |
-| 语音合成 | **Inworld TTS** | **需自备 API Key**；也可换成任何返回 WAV / PCM 的 TTS |
+| 用途      | 供应商             | 说明                                       |
+| ------- | --------------- | ---------------------------------------- |
+| 对话 / 记忆 | **DeepSeek**    | OpenAI 兼容接口，作为后端 LLM                     |
+| 语音合成    | **Inworld TTS** | **需自备 API Key**；也可换成任何返回 WAV / PCM 的 TTS |
 
 密钥一律从**环境变量**读取，代码里不出现明文，也不写入仓库。
 
@@ -164,10 +176,10 @@ powershell -ExecutionPolicy Bypass -File scripts\stop.ps1 -Ports 4173,8880,25503
 
 分两种，别搞混：
 
-| 想清掉 | 怎么做 | 影响 |
-|---|---|---|
-| **她的记忆**（记忆卡 / 事实 / 情感图 / 工作记忆） | `scripts\reset-memory.ps1` | 人格侧 `/reset` 重建，**种子记忆自动重装**（不丢） |
-| **剧情进度**（哪些 beat 说过了） | 同上脚本的第 5 步；或 `-KeepStory` 跳过 | 台词可以重说一遍，记忆卡不会重复写 |
+| 想清掉                             | 怎么做                          | 影响                               |
+| ------------------------------- | ---------------------------- | -------------------------------- |
+| **她的记忆**（记忆卡 / 事实 / 情感图 / 工作记忆） | `scripts\reset-memory.ps1`   | 人格侧 `/reset` 重建，**种子记忆自动重装**（不丢） |
+| **剧情进度**（哪些 beat 说过了）           | 同上脚本的第 5 步；或 `-KeepStory` 跳过 | 台词可以重说一遍，记忆卡不会重复写                |
 
 ```powershell
 # 先干跑看看
@@ -186,16 +198,15 @@ powershell -ExecutionPolicy Bypass -File scripts\reset-memory.ps1 -KeepStory
 
 ## 脚本速查
 
-| 脚本 | 作用 | 用法 |
-|---|---|---|
-| `scripts\n_guard_bg.bat` | **后台**重启 4173（先杀掉占用该端口的旧进程，再 `start /min`） | 双击，或命令行直接跑；日志在 `backend\llm_route.log` / `obs.log` |
-| `scripts\n_guard.bat` | **前台**启动 4173（Ctrl+C 结束） | 适合调试看实时输出 |
-| `scripts\stop.ps1` | 按端口停进程 | `-Ports 4173,8880,25503` · `-WhatIf` |
-| `scripts\reset-memory.ps1` | 清人格记忆（保留种子）+ 重置剧情进度 | `-DryRun` · `-KeepStory` · `-PersonaUrl` |
-| `tools\nori_tap.js` | 旁路录制器：抓一次会话做回归基准 | `node tools/nori_tap.js --listen 4175 --up 127.0.0.1:4173`，然后浏览器改访问 4175；产物在 `recordings/<时间戳>/` |
-| `tools\patch-exe.js` | 给**你自己的** exe 打补丁（不分发 exe） | `--dry-run` 先扫描 · 默认输出 `Nori.Web.clean.exe` · `NORI_KEEP_FACTS=` 多保留几条 |
-| `npm start` | 前台启动代理 | 等价于 `node backend/nori_proxy.js` |
-
+| 脚本                         | 作用                                         | 用法                                                                                               |
+| -------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `scripts\n_guard_bg.bat`   | **后台**重启 4173（先杀掉占用该端口的旧进程，再 `start /min`） | 双击，或命令行直接跑；日志在 `backend\llm_route.log` / `obs.log`                                               |
+| `scripts\n_guard.bat`      | **前台**启动 4173（Ctrl+C 结束）                   | 适合调试看实时输出                                                                                        |
+| `scripts\stop.ps1`         | 按端口停进程                                     | `-Ports 4173,8880,25503` · `-WhatIf`                                                             |
+| `scripts\reset-memory.ps1` | 清人格记忆（保留种子）+ 重置剧情进度                        | `-DryRun` · `-KeepStory` · `-PersonaUrl`                                                         |
+| `tools\nori_tap.js`        | 旁路录制器：抓一次会话做回归基准                           | `node tools/nori_tap.js --listen 4175 --up 127.0.0.1:4173`，然后浏览器改访问 4175；产物在 `recordings/<时间戳>/` |
+| `tools\patch-exe.js`       | 给**你自己的** exe 打补丁（不分发 exe）                 | `--dry-run` 先扫描 · 默认输出 `Nori.Web.clean.exe` · `NORI_KEEP_FACTS=` 多保留几条                           |
+| `npm start`                | 前台启动代理                                     | 等价于 `node backend/nori_proxy.js`                                                                 |
 
 ---
 
@@ -217,15 +228,15 @@ scripts/            n_guard.bat / n_guard_bg.bat / stop.ps1 / reset-memory.ps1
 
 ## 主要端点
 
-| 方法 | 路径 | 用途 |
-|---|---|---|
-| GET | `/nori-line` | 取待说话队列（**破坏性**：取走即清空） |
-| POST | `/nori-spoken` | 播放回报 `{qid,qpart}`；`skip` 表示主动跳过 |
-| POST | `/nori-tts[?stream=1]` | 整段 WAV / 分块 PCM |
-| POST | `/nori-touch` | 摸头 `{part:'head'\|'tail'}`，可能返回 `blocked` |
-| GET | `/nori-lifestat` | 生命周期快照（含 `petGate`） |
-| GET | `/nori-qstat` | 语音队列健康度（`timeouts` / `stale` / `skipped`） |
-| POST | `/v1/chat/completions` | LLM 出口（OpenAI 兼容） |
+| 方法   | 路径                     | 用途                                        |
+| ---- | ---------------------- | ----------------------------------------- |
+| GET  | `/nori-line`           | 取待说话队列（**破坏性**：取走即清空）                     |
+| POST | `/nori-spoken`         | 播放回报 `{qid,qpart}`；`skip` 表示主动跳过          |
+| POST | `/nori-tts[?stream=1]` | 整段 WAV / 分块 PCM                           |
+| POST | `/nori-touch`          | 摸头 `{part:'head'\|'tail'}`，可能返回 `blocked` |
+| GET  | `/nori-lifestat`       | 生命周期快照（含 `petGate`）                       |
+| GET  | `/nori-qstat`          | 语音队列健康度（`timeouts` / `stale` / `skipped`） |
+| POST | `/v1/chat/completions` | LLM 出口（OpenAI 兼容）                         |
 
 ---
 
@@ -246,6 +257,7 @@ NoriPet.why()                     // 摸头判定诊断
 
 - 本仓库代码的许可待定（作者保留后续选择）。
 - **不重分发**游戏本体、角色素材、音频与模型；使用前请自行取得合法来源。
-- 游戏前端为 [MF-Dust/Nori.Web](https://github.com/MF-Dust/Nori.Web)，遵循其 MIT 许可；
+- 游戏前端为 [MF-Dust/Nori.Web](https://github.com/MF-Dust/Nori.Web)，遵循其 MIT 许可；  
   本仓库只在运行时与它对接，**未包含其源码或资源**。
 - `frontend/shims/` 内的脚本为本项目自研，注入页面运行时生效。
+
